@@ -1,0 +1,58 @@
+﻿Indexing
+////Create term-symptom index and sympDict and termDict////
+1. Read sym_t.csv file
+	For each line
+	1.1. Tokenize to sid and title
+	1.2. Add sid and title to sympDict
+	1.3. Tokenize title
+		For each token
+		1.3.1. Add token to termDict and increment term counter
+		1.3.2. Create posting from tid to sid
+2. Create termPostingDict
+3. Write termPostings to termCorpus.index file
+4. Write sympDict to symptom.dict file
+5. Write termDict to term.dict file
+6. Write termPostingDict to termPosting.dict file
+
+////Create diagDict////
+7. Read dia_t.csv file
+	For each line
+	7.1. Tokenize to did and title
+	7.2. Add did and title to diagDict
+8. Write diagDict to diagnosis.dict file
+
+////Create symptom-diagnose index and diagnose-symptom index////
+9. Read diffsydiw file
+	For each line
+	9.1. Tokenize to sid and did (dump weight for now)
+	9.2. Create sympPostings from sid to did
+	9.3. Create diagPostings from did to sid
+10. Create sympPostingDict
+11. Create diagPostingDict
+12. Write sympPosting to sympCorpus.index file
+13. Write diagPosting to diagCorpus.index file
+14. Write sympPostingDict to sympPosting.dict file
+15. Write diagPostingDict to diagPosting.dict file
+
+Query
+1. Load all dicts
+2. Tokenize query to symptoms with ,
+	For each symptom
+	2.1. Tokenize to term
+		For each term
+		2.1.1. Find tid from termDict
+		2.1.2. Find position from termPostingDict
+		2.1.3. Read sid from termCorpus.index and add to list
+	2.2. Intersect all sid list of each term
+		For each sid
+		2.2.1. Find position from sympPostingDict
+		2.2.2. Read did from sympCorpus.index and add to list
+	2.3. Union all did list of each sid
+3. Intersect all did list of all symptoms
+	For each did
+	3.1. Find title from diagDict and add to list
+	3.2. Find position from diagPostingDict
+	3.3. Read sid from diagCorpus.index and add to list
+		For each sid
+		3.3.1. Find title from sympDict and add to list
+	3.4. Output diagnose title and list of symptoms
